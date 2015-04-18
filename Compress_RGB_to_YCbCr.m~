@@ -17,7 +17,7 @@ for i = 0:8:rows
             b = 8;
             
         end
-        reduced.c  = Reducer(ycbcr(i:(i+a),j:(j+b),:));
+        reduced.c  = Reducer(ycbcr(i:(i+a),j:(j+b,:));
         
     end
     c = c + 1;
