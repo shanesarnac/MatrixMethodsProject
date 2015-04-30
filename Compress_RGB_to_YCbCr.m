@@ -1,9 +1,14 @@
+%% Converting RGB to YCbCr and Returning Reduced Image
+% Author: Antoine Steiblen
+% Commented by: Shane Sarnac
 
 function [saved,z1] = Compress_RGB_to_YCbCr(img)
 
+% Read image and convert to ycbcr
 rgb = imread(img);
 ycbcr = rgb2ycbcr(rgb);
 
+% determine the size of the matrix
 [rows, columns, depth] = size(ycbcr);
 Vert_mat = rows/8;
 check_rows = Vert_mat - floor(Vert_mat);
@@ -31,6 +36,8 @@ ycbcr = ycbcr(1:(end-extra_row),1:(end-extra_col),:);
 c = 1;
 saved = 0;
 
+% Create 8x8 blocks and reduce each block
+% The saved variable counts the number of bytes saved with each 8x8 block
 for j = 1:8:floor(Hor_mat)*8
     for i = 1:8:floor(Vert_mat)*8        
             a = 7;
@@ -47,6 +54,7 @@ end
 
 display(saved);
 
+% Reconstuct ycbcr matrix (from 8x8 parts)
 Mat = [];
 counter = 1;
 for c = 1:(floor(Hor_mat))
@@ -59,10 +67,9 @@ for c = 1:(floor(Hor_mat))
     end
     
     Mat = [Mat,Col];
-    
-   
 end
 
+% Convert back to rgb and show image
 Mat = ycbcr2rgb(Mat);
 figure;
 imshow(Mat)

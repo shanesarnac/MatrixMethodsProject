@@ -1,8 +1,11 @@
+%% Compress Using RGB
+% Authors: Shane Sarnac and Antoine Steiblen
 
 function [saved,z1] = Compress_RGB(img)
 
 rgb = imread(img);
 
+% Determine the size of the matrix. 
 [rows, columns, depth] = size(rgb);
 Vert_mat = rows/8;
 check_rows = Vert_mat - floor(Vert_mat);
@@ -30,6 +33,7 @@ rgb = rgb(1:(end-extra_row),1:(end-extra_col),:);
 c = 1;
 saved = 0;
 
+% Break up into 8x8 blocks, reduce each block, and count the number of bytes saved (saved)
 for j = 1:8:floor(Hor_mat)*8
     for i = 1:8:floor(Vert_mat)*8        
             a = 7;
@@ -50,6 +54,7 @@ end
 
 display(saved);
 
+% Reconstruct matrix from reduced form
 Mat = [];
 counter = 1;
 for c = 1:(floor(Hor_mat))
@@ -66,6 +71,7 @@ for c = 1:(floor(Hor_mat))
    
 end
 
+% Show image
 figure;
 imshow(Mat)
 
