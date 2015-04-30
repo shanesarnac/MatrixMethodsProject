@@ -1,10 +1,10 @@
 
-function [saved,z1] = Compress_RGB_to_YCbCr(img)
+function [saved,z1] = Compress_RGB_to_HSV(img)
 
 rgb = imread(img);
-ycbcr = rgb2ycbcr(rgb);
+hsv = rgb2hsv(rgb);
 
-[rows, columns, depth] = size(ycbcr);
+[rows, columns, depth] = size(hsv);
 Vert_mat = rows/8;
 check_rows = Vert_mat - floor(Vert_mat);
 extra_row = 0;
@@ -26,7 +26,7 @@ end
 
 step_col = floor(Hor_mat) + extra_col;
 
-ycbcr = ycbcr(1:(end-extra_row),1:(end-extra_col),:);
+hsv = hsv(1:(end-extra_row),1:(end-extra_col),:);
 
 c = 1;
 saved = 0;
@@ -35,10 +35,14 @@ for j = 1:8:floor(Hor_mat)*8
     for i = 1:8:floor(Vert_mat)*8        
             a = 7;
             b = 7;
-            [reduced(c).data,z1,z2,z3] =  Reducer(ycbcr(i:(i+a),j:(j+b),:));
+            [reduced(c).data,z1,z2,z3] =  Reducer(hsv(i:(i+a),j:(j+b),:));
             x = [z1;z2;z3];
             [rowIdx,colIdx] = find(x);
             v = accumarray(rowIdx,colIdx,[],@max)';
+            [v1, v2, v3] = size(v);
+            if v2 < 3;
+                v(3) = 0;
+            end
             saved = saved + sum([64 64 64] - v);
             c = c + 1;  
     end
@@ -63,7 +67,7 @@ for c = 1:(floor(Hor_mat))
    
 end
 
-Mat = ycbcr2rgb(Mat);
+Mat = hsv2rgb(Mat);
 figure;
 imshow(Mat)
 
